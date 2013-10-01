@@ -32,7 +32,7 @@ would result in a match. The supplied JSON has a `:first_name` and a
 Off course, you can also specify your root object:
 
 ```ruby
-%q({"movie":{"title":"Friday the 13th","release_year":"1980"}}").should have_jason(
+%q({"movie":{"title":"Friday the 13th","release_year":"1980"}}).should have_jason(
   movie: [ :title, :release_year ]
 )
 ```
@@ -47,8 +47,8 @@ object in the specifications key, like so:
 
 my_movie = Movie.find(x)
 
-%q({"movie":{"title":"Friday the 13th","release_year":"1980"}}").should have_jason(
-  my_movie => [ :title, :release_year ]
+%q({"movie":{"title":"Friday the 13th","release_year":"1980"}}).should have_jason(
+  { movie: { my_movie => [ :title, :release_year ] } }
 )
 ```
 
@@ -75,20 +75,18 @@ an `Array` with a size of `2` and each element should have a `title` key.
 Off course you should combine all of it to make full use of the potential:
 
 ```ruby
-json = %q(
-{"user":{
-    "user_name":"jason"
+json = %q({"user":{
+    "user_name":"jason",
     "favorite_movies":[
       {"title":"Friday the 13th","id":1},
       {"title":"Nightmare on Elm Street","id":2}
     ]
-  }
+  },
   "links":[
-    { href:"/users/2", rel: "self" },
-    { href:"/users/2/movies", rel: "favorite movies"}
+    { "href":"/users/2", "rel": "self" },
+    { "href":"/users/2/movies", "rel": "favorite movies"}
   ]
-}
-)
+})
 
 json.should have_jason(
   user: {
@@ -103,7 +101,7 @@ json.should have_jason(
 
 Alpha - not even released to RubyGems.org.
 
-The final example might work, but I guess not :smirk:
+The final example might just work, see `spec/readme_spec.rb`
 
 ## Contributing to jason_spec
 
