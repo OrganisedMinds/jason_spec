@@ -2,6 +2,8 @@
 
 Write specs for JSON without writing JSON or data-structures
 
+<a href="http://www.flickr.com/photos/frogdna/5534481247/" title="Friday the 13th - Jason Mask Replica by frogDNA, on Flickr"><img src="http://farm6.staticflickr.com/5094/5534481247_361aa64980.jpg" width="375" height="500" alt="Friday the 13th - Jason Mask Replica"></a>
+
 ## Contributing to jason_spec
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
