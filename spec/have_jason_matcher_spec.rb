@@ -63,6 +63,10 @@ describe Jason::HaveJasonMatcher do
   end
 
   describe "With Jason::Spec" do
-    it "takes a Jason::Spec"
+    it "takes a Jason::Spec" do
+      %([{"name":"Alexis"},{"name":"Ali"},{"name":"Freddy Kruger"}]).should have_jason(
+        Jason.spec(type: :array, each: [ :name ])
+      )
+    end
   end
 end

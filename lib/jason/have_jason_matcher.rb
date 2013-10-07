@@ -70,6 +70,18 @@ module Jason
         return misses
       end
 
+      if specs.is_a?(Jason::Spec)
+        root = "root" if root == ""
+
+        if !actual
+          misses[root] = { expected: { key: root }, got: :not_present }
+        elsif !specs.fits?(actual)
+          misses[root] = { expected: specs.opts, got: specs.misses }
+        end
+
+        return misses
+      end
+
       specs.each do |key, value|
         res_key = root != "" ? "#{root}.#{key}" : "#{key}"
         key = key.to_s if key.is_a?(Symbol)

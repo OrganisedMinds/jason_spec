@@ -38,6 +38,8 @@ module Jason
           match_size(value, actual)
         when :each
           match_each(value, actual)
+        when :fields
+          match_fields(value, actual)
         end
 
         break if @misses.any?
@@ -46,14 +48,30 @@ module Jason
       @misses.empty?
     end
 
+    # Does the value match the requested type, populates @misses in failure
+    #
+    # @param [Symbol, String, Class] type  What type should the value be.
+    #        Supported strings are: hash, array, string or boolean
+    #
+    # @param [Object] value
+    #
+    # @example Hash
+    #   match_type(:hash,   { foo: "bar" }) # match
+    #   match_type("array", [0,1,2])        # match
+    #   match_type(String,  "meh")          # match
+    #   match_tyoe(:booelean, false)        # match
+    #
+    # @return [void]
     def match_type(type, value)
       matched = case type
-      when :array, Array, "array", "Array"
+      when :array, "array", "Array"
         value.is_a?(Array)
-      when :hash, Hash, "hash", "Hash"
+      when :hash, "hash", "Hash"
         value.is_a?(Hash)
-      when :string, String, "string", "String"
+      when :string, "string", "String"
         value.is_a?(String)
+      when :boolean, "boolean", "Boolean"
+        value.is_a?(TrueClass) || value.is_a?(FalseClass)
       else
         value.is_a?(type)
       end
@@ -89,24 +107,31 @@ module Jason
 
       value.each_with_index do |val, index|
         if !val.is_a?(Hash)
-          @misses << "Each check failed. #{val} is no hash at [#{index}]"
+          @misses << "Each check failed. #{val} is no hash at #{root}[#{index}]"
           break
         end
 
-        mapping.each do |key, attributes|
+        mapping.each do |key, fields|
+          miss_key = root == "" ? key : "#{root}.#{key}"
+
           if !val[key]
-            @misses << "Each check failed. Key #{key} is missing at [#{index}]"
+            @misses << "Each check failed. Key #{miss_key} is missing at #{root}[#{index}]"
             break
           end
 
           if !val[key].is_a?(Hash)
-            @misses << "Each check failed. #{key} is no hash at [#{index}]"
+            @misses << "Each check failed. #{miss_key} is no hash at #{root}[#{index}]"
             break
           end
 
-          attributes.each do |attr|
+          if fields.is_a?(Hash)
+            match_each(fields,val[key],miss_key)
+            next
+          end
+
+          fields.each do |attr|
             if !val[key].has_key?(attr.to_s)
-              @misses << "Each check failed. #{key}[#{attr}] is missing at [#{index}]"
+              @misses << "Each check failed. #{miss_key}[#{attr}] is missing at #{root}[#{index}]"
               break
             end
           end
@@ -123,7 +148,7 @@ module Jason
     #
     def match_each_shallow(fields, value)
       value.each_with_index do |val, index|
-        attributes.each do |attr|
+        fields.each do |attr|
           if !val.has_key?(attr.to_s)
             @misses << "Shallow each check failed. Key #{attr} is missing at [#{index}]"
             break
