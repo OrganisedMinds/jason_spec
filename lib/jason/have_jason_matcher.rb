@@ -1,11 +1,44 @@
+require 'pp'
 require 'jason/spec'
 
 module Jason
+
+  # Provides the have_jason functionality
   class HaveJasonMatcher
+
+    # @param [Array,Hash] specs   List of specifications
+    #
+    # @example Specs by array
+    #   # will check if the actual JSON has a foo and a bar key
+    #   HaveJasonMatcher.new([ :foo, :bar ])
+    #
+    # @example Specs by hash
+    #   # will check if the actual has an item object with a foo and a bar key
+    #   HaveJasonMatcher.new( item: [ :foo, :bar ])
+    #
+    #   # will check if the actual has an item object with a foo key with a
+    #   # bar value
+    #   HaveJasonMatcher.new( item: { foo: "bar" } )
+    #
+    # @example Specs by hash with objects
+    #   # will check if the actual has a attribute key with the value of
+    #   # ruby_object.attribute()
+    #   HaveJasonMatcher.new( ruby_object => [ :attribute ] )
+    #
+    # @example Specs by Jason.spec
+    #   # will check the actual against the provided Jason::Spec
+    #   HaveJasonMatcher.new( item: Jason.spec(type: Hash, fields: [ :foo, :bar ] ))
+    #
     def initialize(specs)
       @specs = specs
     end
 
+    # Check if the given JSON matches the specifications
+    #
+    # @param [JSON, Hash] actual   the value to check
+    #
+    # @return [Boolean]
+    #
     def matches?(actual)
       @actual = actual.is_a?(String) ? Rufus::Json.decode(actual) : actual
 
@@ -14,6 +47,13 @@ module Jason
       @misses.empty?
     end
 
+    # recursivly walk over the specs and the actual to find any misses
+    #
+    # @param [Array,Hash] specs    List of specifications
+    # @param [Array,Hash] actual   Provided data-structure (once JSON)
+    #
+    # @return [Hash] Hash with all the misses
+    #
     def match_recursively(specs, actual, root="")
       actual ||= {}
 
@@ -93,10 +133,12 @@ module Jason
       return misses
     end
 
+    # @return [String] Message to provide if it should have matched but didn't
     def failure_message
       "Jason misses: #{@misses.pretty_inspect}\n\tin #{@actual}"
     end
 
+    # @return [String] Message to provide if it shouldn't have matched but did
     def negative_failure_message
       "Jason has: #{@actual}"
     end

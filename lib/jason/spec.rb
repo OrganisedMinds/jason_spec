@@ -1,16 +1,34 @@
 module Jason
+
+  # @returns [Jason::Spec] Specifications for JSON checking
   def self.spec(spec)
     Spec.new(spec)
   end
 
+  # Class for holding and checking specifications for a JSON structure
+  #
+  # @attr_reader [Hash] specs Stored specifications
+  # @attr_reader [Array] misses List of collected failures
+  #
   class Spec
     attr_reader :specs, :misses
 
+    # @param [Hash] specs   Specifications for testing
+    # @option specs [Class]   :type    Type of the actual
+    # @option specs [Integer] :size    Size of the actual
+    # @option specs [Array]   :each    Each element in actual should have
+    #                                  these fields
+    # @option specs [Array]   :fields  Fields that should be present in actual
+    #
     def initialize(specs)
       @specs = specs
       @misses = []
     end
 
+    # Check if the specs fit the actual
+    #
+    # @returns [Boolean]
+    #
     def fits?(actual)
       @specs.each do |key, value|
         case key
@@ -43,6 +61,12 @@ module Jason
       @misses << "Type mismatch; Expected #{type}, got #{value.class}: #{value}" if !matched
     end
 
+    # Does the value match the requested size. Populates @misses in failure
+    #
+    # @param [Integer] size  The needed size
+    # @param [Object] value
+    # @return [void]
+    #
     def match_size(size, value)
       if !value.respond_to?(:size)
         @misses << "Size mismatch; #{value} has no size"
@@ -52,6 +76,12 @@ module Jason
       @misses << "Size mismatch; Expected #{size}, got #{value.size}" if value.size != size
     end
 
+    # Does the value match the requested size. Populates @misses in failure
+    #
+    # @param [Integer] size  The needed size
+    # @param [Object] value
+    # @return [void]
+    #
     def match_each(mapping, value, root="")
       if mapping.is_a?(Array)
         return match_each_shallow(mapping, value)
@@ -86,7 +116,12 @@ module Jason
       end
     end
 
-    def match_each_shallow(attributes, value)
+    # match each only for fields
+    # @param [Array<Symbol>] fields  list of required fields
+    # @param [Array] list of objects that carry fields
+    # @return [void]
+    #
+    def match_each_shallow(fields, value)
       value.each_with_index do |val, index|
         attributes.each do |attr|
           if !val.has_key?(attr.to_s)
@@ -98,5 +133,20 @@ module Jason
         break if @misses.any?
       end
     end
+
+    # Match fields on a hash
+    # @param [Array<Symbol>] fields  list of required fields
+    # @param [Hash] value  Hash to check fields in
+    # @return [void]
+    #
+    def match_fields(fields, value)
+      fields.each do |attr|
+        if !value.has_key(attr.to_s)
+          @misses << "Fields check failed. Key #{attr} is not present"
+          break
+        end
+      end
+    end
+
   end
 end
