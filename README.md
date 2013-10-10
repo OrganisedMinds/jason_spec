@@ -1,5 +1,7 @@
 # jason_spec
 
+[![Build Status](https://travis-ci.org/OrganisedMinds/jason_spec.png?branch=master)](https://travis-ci.org/OrganisedMinds/jason_spec)
+
 Write specs for JSON without writing JSON or data-structures
 
 <a href="http://www.flickr.com/photos/frogdna/5534481247/" title="Friday the 13th - Jason Mask Replica by frogDNA, on Flickr"><img src="http://farm6.staticflickr.com/5094/5534481247_361aa64980.jpg" width="375" height="500" alt="Friday the 13th - Jason Mask Replica"></a>
@@ -23,7 +25,9 @@ means you should not type or create any JSON; or even data structures.
 The following snippet:
 
 ```ruby
-%q({"first_name":"Jason","last_name":"Voorhees"}).should have_jason([:first_name,:last_name])
+%q(
+  {"first_name":"Jason","last_name":"Voorhees"}
+).should have_jason([:first_name,:last_name])
 ```
 
 would result in a match. The supplied JSON has a `:first_name` and a
@@ -32,7 +36,9 @@ would result in a match. The supplied JSON has a `:first_name` and a
 Off course, you can also specify your root object:
 
 ```ruby
-%q({"movie":{"title":"Friday the 13th","release_year":"1980"}}).should have_jason(
+%q(
+  {"movie":{"title":"Friday the 13th","release_year":"1980"}}
+).should have_jason(
   movie: [ :title, :release_year ]
 )
 ```
@@ -47,7 +53,9 @@ object in the specifications key, like so:
 
 my_movie = Movie.find(x)
 
-%q({"movie":{"title":"Friday the 13th","release_year":"1980"}}).should have_jason(
+%q(
+  {"movie":{"title":"Friday the 13th","release_year":"1980"}}
+).should have_jason(
   { movie: { my_movie => [ :title, :release_year ] } }
 )
 ```
@@ -64,7 +72,9 @@ specification?
 **Jason::Spec** to the resque:
 
 ```ruby
-%q({"movies":[{"title":"Friday the 13th"},{"title":"Nightmare on Elm Street"}]}).should have_jason(
+%q(
+  {"movies":[{"title":"Friday the 13th"},{"title":"Nightmare on Elm Street"}]}
+).should have_jason(
   movies: Jason.spec( type: Array, size: 2, each: [ :title ] )
 )
 ```
@@ -97,21 +107,36 @@ json.should have_jason(
 )
 ```
 
+For further documentation, please read the docs at [RubyDoc.info](http://rubydoc.info/gems/jason_spec)
+
 ## State
 
-Alpha - not even released to RubyGems.org.
+The examples in this readme work, see `spec/readme_spec.rb`. Otherwise this is
+a work in progress; Especialy the features on `Jason::Spec` are bound to grow.
 
-The final example might just work, see `spec/readme_spec.rb`
+## Credits
+
+`jason_spec`
+* was inspired by [json_spec](https://github.com/collectiveidea/json_spec).
+  The code organisation has been derived from their project.
+* was written by [Hartog de Mik](https://github.com/coffeeaddict)
+* was kindly sponsored by [OrganisedMinds](http://www.organisedminds.com/)
+  For those who organise Teamwork
 
 ## Contributing to jason_spec
 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
+* Check out the latest master to make sure the feature hasn't been implemented
+  or the bug hasn't been fixed yet.
+* Check out the issue tracker to make sure someone already hasn't requested
+  it and/or contributed it.
 * Fork the project.
 * Start a feature/bugfix branch.
 * Commit and push until you are happy with your contribution.
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+* Make sure to add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to
+  have your own version, or is otherwise necessary, that is fine, but please
+  isolate to its own commit so I can cherry-pick around it.
 
 ## Copyright
 

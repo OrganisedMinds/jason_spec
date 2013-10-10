@@ -117,19 +117,19 @@ module Jason
     # @return [void]
     #
     # @example Shallow check for key
-    # match_each([ :id ], [ { 'id' => 1 }])
+    #   match_each([ :id ], [ { 'id' => 1 }])
     #
     # @example Shallow check for key with any
-    # match_each([ :id ], [ { 'id' => 1 }, { 'bar' => 'beer' } ], :any )
+    #   match_each([ :id ], [ { 'id' => 1 }, { 'bar' => 'beer' } ], :any )
     #
     # @example Shallow check for key with none
-    # not match_each([ :id ], [ { 'id' => 1 }, { 'bar' => 'beer' } ], :any )
+    #   not match_each([ :id ], [ { 'id' => 1 }, { 'bar' => 'beer' } ], :any )
     #
     # @example Deep check
-    # match_each(
-    #   { item: [ :id, :name ] }
-    #   [ { "item" => { "id" => "one", "name" => "two" } } ]
-    # )
+    #   match_each(
+    #     { item: [ :id, :name ] }
+    #     [ { "item" => { "id" => "one", "name" => "two" } } ]
+    #   )
     #
     def match_each(mapping, value, type=:each, root="")
       misses = []
@@ -220,24 +220,24 @@ module Jason
     # @return [void]
     #
     # @example Using array (each)
-    # # every field must be present
-    # spec = Jason.spec(fields: [ :id, :name ])
-    # spec.fits({ 'id' => 1, 'name' => "jason" })
-    # not spec.fits({ 'id' => 1 })
+    #   # every field must be present
+    #   spec = Jason.spec(fields: [ :id, :name ])
+    #   spec.fits({ 'id' => 1, 'name' => "jason" })
+    #   not spec.fits({ 'id' => 1 })
     #
     # @example Using each
-    # # same as passing the array
-    # spec = Jason.spec(fields: { each: [ :id, :name ] })
-    # spec.fits({ 'id' => 1, 'name' => "jason" })
-    # not spec.fits({ 'id' => 1 })
+    #   # same as passing the array
+    #   spec = Jason.spec(fields: { each: [ :id, :name ] })
+    #   spec.fits({ 'id' => 1, 'name' => "jason" })
+    #   not spec.fits({ 'id' => 1 })
     #
     # @example Using any
-    # spec = Jason.spec(fields: { any: [ :id, :name ] })
-    # spec.fits({ 'id' => 1 })
+    #   spec = Jason.spec(fields: { any: [ :id, :name ] })
+    #   spec.fits({ 'id' => 1 })
     #
     # @example Using none
-    # spec = Jason.spec(fields: { none: [ :id, :name ] })
-    # not spec.fits({ 'id' => 1 })
+    #   spec = Jason.spec(fields: { none: [ :id, :name ] })
+    #   not spec.fits({ 'id' => 1 })
     #
     def match_fields(fields, value, type=:each)
       if fields.is_a?(Hash)
