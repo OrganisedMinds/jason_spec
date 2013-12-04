@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem "rufus-json", "1.0.6"
-gem "rspec", "~> 2.8.0"
+gem "rspec", "~> 2.8"
 
 group :development do
   gem "yard", "~> 0.7"
