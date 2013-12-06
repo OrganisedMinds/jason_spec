@@ -76,7 +76,7 @@ module Jason
         if !actual
           misses[root] = { expected: { key: root }, got: :not_present }
         elsif !specs.fits?(actual)
-          misses[root] = { expected: specs.opts, got: specs.misses }
+          misses[root] = { expected: specs.specs, got: specs.misses }
         end
 
         return misses
@@ -94,7 +94,7 @@ module Jason
             end
 
             if !value.fits?(actual[key])
-              misses[res_key] = { expected: value.opts, got: value.misses }
+              misses[res_key] = { expected: value.specs, got: value.misses }
             end
 
           elsif value.is_a?(Array) or value.is_a?(Hash)
